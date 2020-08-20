@@ -1,0 +1,53 @@
+#Kabanero! on activate substitute StackId for text 'StackId'
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: StackId-deploy-task
+spec:
+  inputs:
+    resources:
+      - name: git-source
+        type: git
+      - name: docker-image
+        type: image
+    params:
+      - name: repository-name
+        default: StackId
+      - name: app-deploy-file-name
+        default: app-deploy.yaml
+      - name: namespace
+        type: string
+        description: The namespace to deploy the app into
+        default: ""
+      - name: image-pull-secret
+        description: The image pull secret for the appsody app
+  steps:
+    # TODO: update pullPolicy also (I don't think it's pulling the updated image)
+    - name: add-pullsecret-to-appsody-deploy-file
+      image: ubuntu
+      env:
+        - name: gitsource
+          value: git-source
+        - name: YAMLFILE
+          value: $(inputs.params.app-deploy-file-name)
+      script: |
+        # Add pullSecret to authenticate pulling the image from a private registry
+        appsodyDeployFile=$(find /workspace/$gitsource -name ${YAMLFILE} -type f)
+        awk '/applicationImage:/{print;print "  pullSecret: $(inputs.params.image-pull-secret)";next}1' $appsodyDeployFile > tmp.yaml
+        cat tmp.yaml > $appsodyDeployFile
+        rm tmp.yaml
+        echo "[INFO] appsody deploy file contents '$appsodyDeployFile'"
+        cat $appsodyDeployFile
+    - name: deploy-image
+      image: kabanero/kabanero-utils:0.3.0
+      command: ["/bin/sh"]
+      args:
+        [
+          "-c",
+          "find /workspace/$gitsource -name ${YAMLFILE} -type f|xargs kubectl apply -n '$(inputs.params.namespace)' -f",
+        ]
+      env:
+        - name: gitsource
+          value: git-source
+        - name: YAMLFILE
+          value: $(inputs.params.app-deploy-file-name)

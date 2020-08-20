@@ -1,0 +1,13 @@
+[
+	{
+		"displayName": "Local React Node.js Express simple template",
+		"description": "Express web framework for Node.js",
+		"language": "nodejs",
+		"projectType": "appsodyExtension",
+		"projectStyle": "Appsody",
+		"location": "file:///Users/bcwalkeribm.com/.appsody/stacks/dev.local/react-nodejs-express.v0.1.0.templates.simple.tar.gz",
+		"links": {
+			"self": "/devfiles/react-nodejs-express/devfile.yaml"
+		}
+	}
+]

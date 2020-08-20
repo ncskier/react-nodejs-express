@@ -1,0 +1,21 @@
+apiVersion: v2
+stacks:
+  - id: react-nodejs-express
+    name: React Node.js Express
+    version: 0.1.0
+    description: React frontend with Express web framework for Node.js backend
+    license: Apache-2.0
+    language: nodejs
+    maintainers:
+      - name: Brandon Walker
+        email: bcwalker@ibm.com
+        github-id: ncskier
+    default-template: simple
+    src: https://github.com/ncskier/react-nodejs-express/raw/master/ci/assets/react-nodejs-express.v0.1.0.source.tar.gz
+    templates:
+      - id: simple
+        url: https://github.com/ncskier/react-nodejs-express/raw/master/ci/assets/react-nodejs-express.v0.1.0.templates.simple.tar.gz
+    requirements:
+      docker-version: ">= 17.09.0"
+      appsody-version: ">= 0.2.7"
+    image: docker.io/busybox
