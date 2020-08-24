@@ -14,6 +14,10 @@ spec:
         description: The path to the appsody project
         default: server
         type: string
+      - name: event-ref
+        description: The event ref
+        default: refs/heads/master
+        type: string
     resources:
       - name: git-source
         type: git
@@ -227,6 +231,12 @@ spec:
       args:
         - -c
         - |
+          # Only push images for the 'master' branch
+          eventRef="$(inputs.params.event-ref)"
+          if [[ ! "$eventRef" == *master ]]; then
+            echo "[INFO] Not pushing image for ref '$eventRef' only push image for 'master' branch."
+            exit 0
+          fi
 
           OUTPUTS_RESOURCE_DOCKER_IMAGE_URL_LOWERCASE=$( echo $( /workspace/imageurl_imagename_lowercase.sh ) )
           echo "OUTPUTS_RESOURCE_DOCKER_IMAGE_URL_LOWERCASE=$OUTPUTS_RESOURCE_DOCKER_IMAGE_URL_LOWERCASE"

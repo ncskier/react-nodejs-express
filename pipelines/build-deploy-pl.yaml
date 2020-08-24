@@ -51,6 +51,8 @@ spec:
           value: $(params.react-project-path)
         - name: appsody-project-path
           value: $(params.appsody-project-path)
+        - name: event-ref
+          value: $(params.event-ref)
       resources:
         inputs:
           - name: git-source
